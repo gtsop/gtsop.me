@@ -16,7 +16,65 @@
   https://hsivonen.fi/doctype/
 
   The reason this comment is written after the DTD is because all versions of
-  IE will use the "quirks" mode if the first line of the document does not 
+  IE will use the "quirks" mode if the first line of the document does not
   contain the DTD.
 -->
+<!--
+  The specification tells us that HTML, HEAD and BODY tags make up the main
+  frame of an HTML document... but it also tells us we can ommit them.
+  (https://www.w3.org/TR/html401/struct/global.html)
+  (https://www.w3.org/TR/html5/syntax.html#optional-start-and-end-tags)
 
+  QUESTION 1: Why can we omit these tags?
+
+  Online resources suggest that the reason the specs allows omiting the tags in
+  question is to be backwards compatible with older standards that didn't define
+  these tags.
+  (https://stackoverflow.com/a/5642982)
+  (https://forums.adobe.com/message/8335083#8335083)
+
+  QUESTION 2: Why should we omit these tags?
+
+  The benefits of omiting the tags, as argued by other developers, boil down to:
+  - Less code
+  - Less file size (at scale)
+  - Less network bandwidth (at scale)
+  - If there is no need, why bother?
+
+  There are all nice to have. On the other hand, omiting them can also:
+  - Lead to developer errors
+  - Be prone to implementation errors
+
+  These are bad, but not TOO worrying. The first deal breaker for me though is
+  the following:
+
+  <!DOCTYPE html>
+  <title>test page</title>
+  <script></script>
+
+  Can you answer, just by looking at the code, where will the browser render the
+  script tag? Will it be the HEAD or will it be the BODY? The answer is it
+  doesn't matter. We stumbled uppon unspecified behaviour which is the worst
+  thing to rely on. However, this problem doesn't justify including all three
+  of the tags in question (html, head, body). This problem can be resolved by
+  using only one of the head or body tags. For instance:
+
+  <!DOCTYPE html>
+  <head>
+    <title>test page</title>
+  </head>
+  <script></script>
+
+  Right? No. Run this code to see for yourself that firefox still renders the
+  script on the header tag also marks it as an error. The html validator throws
+  "Error: script element between head and body". What about the opposite then?
+
+  <!DOCTYPE html>
+  <title>test page</title>
+  <body>
+    <script></script>
+  </body>
+
+  It works! We can declare with confidence: One should NOT omit the body tag.
+-->
+<body></body>
